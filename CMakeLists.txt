@@ -12,6 +12,6 @@ include(XSEPlugin)
 target_link_libraries(
 	"${PROJECT_NAME}"
 	PRIVATE
-		${CommonLibName}::${CommonLibName}
+                CommonLibSSE::CommonLibSSE
 		spdlog::spdlog
 )
