@@ -1,4 +1,3 @@
-
 #include "Hooks.h"
 
 void Init()
@@ -76,11 +75,13 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a
 }
 
 #ifdef SKYRIMAE
-extern "C" DLLEXPORT constinit SKSE::PluginVersionData SKSEPlugin_Version = []() {
+extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []() noexcept{
 	SKSE::PluginVersionData v;
 	v.PluginVersion(Plugin::VERSION);
+	v.UsesUpdatedStructs();
+	v.UsesSigScanning();
 	v.PluginName(Plugin::NAME);
-	v.UsesAddressLibrary(true);
+	v.UsesAddressLibrary();
 
 	return v;
 }();
