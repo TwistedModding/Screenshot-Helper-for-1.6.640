@@ -1,40 +1,14 @@
 option(BUILD_DEBUG "Enable debugging options" OFF)
 
-option(BUILD_SKYRIMSE "Build for Skyrim pre-AE" OFF)
 option(BUILD_SKYRIMAE "Build for Skyrim post-AE" OFF)
-option(BUILD_SKYRIMVR "Build for Skyrim VR" OFF)
-option(BUILD_FALLOUT4 "Build for Fallout 4" OFF)
+set(BUILD_TESTING false)
 
-if(BUILD_SKYRIMSE)
+if(BUILD_SKYRIMAE)
+	add_compile_definitions(SKYRIMAE SKYRIM_AE SKYRIM_SUPPORT_AE)
+	set(CommonLibName "CommonLibSSE")
+else()
 	add_compile_definitions(SKYRIMSE)
 	set(CommonLibName "CommonLibSSE")
-	set(CommonLibPath "external/CommonLibSSE")
-	set(GamePath ${SkyrimVRPath})
-	set(GameVersion "Skyrim VR")
-elseif(BUILD_SKYRIMAE)
-	add_compile_definitions(SKYRIMAE)
-	set(CommonLibPath "external/CommonLibAE")
-	set(CommonLibName "CommonLibSSE")
-	set(GamePath ${SkyrimVRPath})
-	set(GameVersion "Skyrim VR")
-elseif(BUILD_SKYRIMVR)
-	add_compile_definitions(SKYRIMVR)
-	add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-	set(CommonLibName "CommonLibVR")
-	set(CommonLibPath "external/CommonLibVR")
-	set(GamePath ${SkyrimVRPath})
-	set(GameVersion "Skyrim VR")
-elseif(BUILD_FALLOUT4)
-	add_compile_definitions(FALLOUT4)
-	set(CommonLibPath "CommonLibF4/CommonLibF4")
-	set(CommonLibName "external/CommonLibF4")
-	set(GamePath ${SkyrimVRPath})
-	set(GameVersion "Fallout 4")
-else()
-message(
-FATAL_ERROR
-	"A game must be selected."
-)
 endif()
 
 if (NOT BUILD_DEBUG)
@@ -132,6 +106,17 @@ if (CMAKE_GENERATOR MATCHES "Visual Studio")
 	)
 endif()
 
-add_subdirectory(${CommonLibPath} ${CommonLibName} EXCLUDE_FROM_ALL)
+include(fetch_content)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependency_configs)
 
-find_package(spdlog CONFIG REQUIRED)
+# spdlog
+set(SPDLOG_INSTALL ON CACHE INTERNAL "Build SPDLOG for CommonLibSSE")
+fetch_content(spdlog "https://github.com/gabime/spdlog" "v1.14.1")
+
+fetch_content(binary_io "https://github.com/Ryan-rsm-McKenzie/binary_io" main)
+
+find_path(CommonLibPath
+		include/REL/Relocation.h
+		PATHS ${CMAKE_SOURCE_DIR}/external/CommonLibSSE)
+
+add_subdirectory(${CommonLibPath} CommonLibSSE)
