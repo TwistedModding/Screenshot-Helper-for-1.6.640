@@ -1,0 +1,5 @@
+if (NOT SPDLOG_FOUND)
+    set(SPDLOG_INCLUDE_DIRS ${spdlog_SOURCE_DIR}/include)
+    set(SPDLOG_LIBRARIES ${spdlog_BINARY_DIR})
+    set(SPDLOG_BUILD_SHARED OFF)
+endif()
