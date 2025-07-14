@@ -80,14 +80,30 @@ void ScreenshotHandler::ModifyFileName(char* dest)
 		Calendar->GetTimeDateString(timedate, 0x200u, 1);
 		Add(timedate);  // We can't sanitize due to special character handling
 
+		static std::string lastTimeStamp;
+		static int sequenceCounter = 0;
+		
+		std::string currentTimeStamp(timedate);
+		if (currentTimeStamp == lastTimeStamp) {
+			sequenceCounter++;
+		} else {
+			lastTimeStamp = currentTimeStamp;
+			sequenceCounter = 0;
+		}
 
-		if (std::filesystem::exists(FilenameToString() + ".png")) {
-			int fixName = 1;
-			while (std::filesystem::exists(FilenameToString() + " - " + std::to_string(fixName) + ".png"))
-				fixName++;
+		int fixName = sequenceCounter;
+		std::string baseFilename = FilenameToString();
+		
+		while (std::filesystem::exists(baseFilename + (fixName > 0 ? " - " + std::to_string(fixName) : "") + ".png")) {
+			fixName++;
+		}
+		
+		if (fixName > 0) {
 			Add(" - ");
 			Add(std::to_string(fixName).c_str());
 		}
+		
+		sequenceCounter = fixName;
 
 		Add(".png");
 
