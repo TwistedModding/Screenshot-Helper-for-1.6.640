@@ -1,5 +1,6 @@
-`git clone https://github.com/TwistedModding/Screenshot-Helper-for-1.6.640.git
-cd Screenshot-Helper-for-1.6.640`
+`git clone https://github.com/TwistedModding/Screenshot-Helper-for-1.6.640.git`
+
+`cd Screenshot-Helper-for-1.6.640`
 
 `git config -f .gitmodules submodule.external/CommonLibSSE.branch dev`
 
